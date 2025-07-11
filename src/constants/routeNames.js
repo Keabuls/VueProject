@@ -8,3 +8,4 @@ export const APP_ROUTE_NAMES = Object.freeze({
   NOT_FOUND: 'not-found',
   CONTACT_US: 'contact-us',
 })
+
