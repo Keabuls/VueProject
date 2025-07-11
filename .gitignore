@@ -29,4 +29,4 @@ coverage
 
 *.tsbuildinfo
 # Firebase configuration file
-.firebaseInfo.js
+src/constants/firebaseInfo.js
