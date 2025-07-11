@@ -42,13 +42,20 @@
               aria-expanded="false"
               class="nav-link dropdown-toggle"
             >
-              Dropdown
+              <i class="bi bi-laptop"></i>
             </a>
             <ul class="dropdown-menu">
-              <li class="dropdown-item"><a>a</a></li>
-              <li class="dropdown-item"><a>a</a></li>
-              <li><hr class="dropdown-divider" /></li>
-              <li class="dropdown-item"><a>a</a></li>
+              <li>
+                <button @click="themeStore.setTheme('light')" class="dropdown-item">
+                  Light &nbsp <i class="bi bi-brightness-high"> </i>
+                </button>
+              </li>
+              <li>
+                <button @click="themeStore.setTheme('dark')" class="dropdown-item">
+                  Dark &nbsp
+                  <i class="bi bi-moon-fill"></i>
+                </button>
+              </li>
             </ul>
           </li>
 
@@ -77,6 +84,8 @@
 <script setup>
 import { useRouter, RouterLink } from 'vue-router'
 import { APP_ROUTE_NAMES } from '@/constants/routeNames.js'
+import { useThemeStore } from '../../stores/themeStore.js'
 
+const themeStore = useThemeStore()
 const router = useRouter()
 </script>
