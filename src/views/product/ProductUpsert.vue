@@ -87,7 +87,11 @@ import { PRODUCT_CATEGORIES } from '@/constants/appConstants'
 import { reactive, ref, onMounted} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import {useSwal} from '@/utility/useSwal.js'
+import productService from '@/services/productService.js'
+import { APP_ROUTE_NAMES } from '@/constants/routeNames.js'
+
 const {showSuccess,showError,showConfirm} = useSwal();
+
 
 const route = useRoute()
 const router = useRouter()
@@ -128,9 +132,9 @@ async function handleSubmit() {
         tags:productObj.tags.length >0 ? productObj.tags.split(',').map((tag) => tag.trim()):[],
         bestseller: Boolean(productObj.isBestseller),
       }
-
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      await productService.createProduct(productData);
       showSuccess('asdasd')
+      router.push({name:APP_ROUTE_NAMES.PRODUCT_LIST})
     }
   } catch (e) {
     console.log(e)
