@@ -1,14 +1,16 @@
 <template>
-   <div class="container">
+  <div class="container">
     <div class="row border p-4 my-5 rounded">
       <div class="col-9">
         <form v-on:submit.prevent="handleSubmit">
           <div class="h2 text-center text-success">Create Product</div>
           <hr />
-          <div class="alert alert-danger pb-0">
+          <div v-if="errorList.length > 0" class="alert alert-danger pb-0">
             Please fix the following errors:
-            <ul>
-              <li>Error List</li>
+            <ul style="list-style-type: none">
+              <li v-for="error in errorList" :key="error">
+                <i class="bi bi-exclamation-circle"></i> {{ error }}
+              </li>
             </ul>
           </div>
 
@@ -39,16 +41,19 @@
             />
           </div>
           <div class="form-check form-switch pt-3">
-            <input v-model="productObj.isBestseller" class="form-check-input" type="checkbox" role="switch" />
+            <input
+              v-model="productObj.isBestseller"
+              class="form-check-input"
+              type="checkbox"
+              role="switch"
+            />
 
-            <label class="form-check-label" for="bestseller">
-              Bestseller
-            </label>
+            <label class="form-check-label" for="bestseller"> Bestseller </label>
           </div>
           <div class="mt-3">
             <label class="text-muted">Category</label>
-            <select class="form-select">
-              <option key="option" value="option"></option>
+            <select class="form-select" v-model="productObj.category" >
+              <option v-for="category in categories"  key="option" value="option">{{ category }}</option>
             </select>
           </div>
           <div class="mb-3">
@@ -78,12 +83,15 @@
 </template>
 
 <script setup>
-import {reactive,ref} from 'vue';
-import { useRouter,useRoute } from 'vue-router';
+import { PRODUCT_CATEGORIES } from '@/constants/appConstants'
+import { reactive, ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
-const route = useRoute();
-const router = useRouter();
-const  loading = ref(false);
+const route = useRoute()
+const router = useRouter()
+const loading = ref(false)
+const errorList = reactive([])
+let categories = PRODUCT_CATEGORIES;
 
 const productObj = reactive({
   name: '',
@@ -92,30 +100,41 @@ const productObj = reactive({
   salePrice: 0,
   tags: [],
   isBestseller: false,
-  categoryId: '',
-  image:'https://placehold.co/600x400',
-});
+  category: '',
+  image: 'https://placehold.co/600x400',
+})
 
-async function handleSubmit(){
-  try{
-    loading.value = true;
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    const productData = {
-      ...productObj,
-      price: Number(productObj.price),
-      salePrice: productObj? Number(productObj.salePrice): null,
-      tags: productObj.tags.split(',').map(tag => tag.trim()),
-      bestseller: Boolean(productObj.isBestseller),
-    };
-    console.log('Product Data:', productData);
-  }
-  catch(e){
-    console.log(e);
-  } 
-  finally {
-    loading.value = false;
-  }
+async function handleSubmit() {
+  try {
+    loading.value = true
+    errorList.length = 0 //clear the list
 
+    if (productObj.name.length < 3) {
+      errorList.push('Name should be at least 3 characters long.')
+    }
+    if (productObj.price <= 0) {
+      errorList.push('Price should be greater than 0.')
+    }
+    if (productObj.category === '') {
+      errorList.push('Please select a category.')
+    }
+    if (errorList.length != 0) {
+      const productData = {
+        ...productObj,
+        price: Number(productObj.price),
+        salePrice: productObj ? Number(productObj.salePrice) : null,
+        tags: productObj.tags.split(',').map((tag) => tag.trim()),
+        bestseller: Boolean(productObj.isBestseller),
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+      console.log('Product Data:', productData)
+    }
+  } catch (e) {
+    console.log(e)
+  } finally {
+    loading.value = false
+  }
+  console.log(productObj)
 }
-
 </script>
