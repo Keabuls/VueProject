@@ -53,7 +53,7 @@
           <div class="mt-3">
             <label class="text-muted">Category</label>
             <select class="form-select" v-model="productObj.category" >
-              <option v-for="category in categories"  key="option" value="option">{{ category }}</option>
+              <option v-for="option in PRODUCT_CATEGORIES"  :key="option" :value="option">{{ option }}</option>
             </select>
           </div>
           <div class="mb-3">
@@ -84,14 +84,16 @@
 
 <script setup>
 import { PRODUCT_CATEGORIES } from '@/constants/appConstants'
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import {useSwal} from '@/utility/useSwal.js'
+const {showSuccess,showError,showConfirm} = useSwal();
 
 const route = useRoute()
 const router = useRouter()
 const loading = ref(false)
 const errorList = reactive([])
-let categories = PRODUCT_CATEGORIES;
+
 
 const productObj = reactive({
   name: '',
@@ -118,17 +120,17 @@ async function handleSubmit() {
     if (productObj.category === '') {
       errorList.push('Please select a category.')
     }
-    if (errorList.length != 0) {
+    if (!errorList.length) {
       const productData = {
         ...productObj,
         price: Number(productObj.price),
         salePrice: productObj ? Number(productObj.salePrice) : null,
-        tags: productObj.tags.split(',').map((tag) => tag.trim()),
+        tags:productObj.tags.length >0 ? productObj.tags.split(',').map((tag) => tag.trim()):[],
         bestseller: Boolean(productObj.isBestseller),
       }
 
       await new Promise((resolve) => setTimeout(resolve, 2000))
-      console.log('Product Data:', productData)
+      showSuccess('asdasd')
     }
   } catch (e) {
     console.log(e)
