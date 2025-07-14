@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 export function useSwal() {
 
     const showAlert = async(options) => { 
-        await Swal.fire(options)
+      return  await Swal.fire(options)
     }
 
     const showSuccess = async(message) => {
