@@ -1,5 +1,6 @@
 <template>
-     <div class="container py-4">
+  <div class="container py-4">
+    
     <div class="border rounded pb-3 px-2">
       <div
         class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center p-4"
@@ -15,10 +16,12 @@
       </div>
 
       <div class="card-body p-3">
+        
         <div class="table-responsive">
           <table class="table table-hover align-middle mb-0 table-striped">
+            <span v-if="loading" class="loader mt-3"></span>
             <thead>
-              <tr>
+              <tr >
                 <th class="ps-3 small text-muted">Product</th>
                 <th class="small text-muted">Category</th>
                 <th class="small text-muted">Pricing</th>
@@ -28,52 +31,46 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <tr v-for="product in products" :key="product.id" >
                 <td class="ps-3">
                   <div class="d-flex align-items-center">
                     <img
-                      :src="`https://placehold.co/50x50`"
+                      :src="product.image  ||  `https://placehold.co/50x50`"
                       class="rounded object-fit-cover me-2"
                       style="width: 50px; height: 50px"
                     />
                     <div>
-                      <div class="fw-semibold small">NAME</div>
+                      <div class="fw-semibold small">{{ product.name }}}</div>
                       <small
                         class="text-muted text-truncate d-inline-block"
                         style="max-width: 200px"
                       >
-                        DESCRIPTION
+                        {{ product.description }}
                       </small>
                     </div>
                   </div>
                 </td>
                 <td>
-                  <span
-                    class="badge bg-secondary bg-opacity-10 text-secondary small"
-                  >
-                    CATEGORY
+                  <span class="badge bg-secondary bg-opacity-10 text-secondary small">
+                    {{product.category}}
                   </span>
                 </td>
                 <td>
                   <div class="d-flex flex-column">
-                    <span class="fw-semibold small">PRICE</span>
-                    <span class="text-danger small"> SALE PRICE </span>
+                    <span class="fw-semibold small">${{product.price}}</span>
+                    <span class="text-danger small"> ${{product.salePrice}} </span>
                   </div>
                 </td>
                 <td>
                   <div class="d-flex flex-wrap gap-1">
-                    <span class="badge bg-info bg-opacity-10 text-info small">
-                      TAGS
-                    </span>
+                    <span v-for="tag in product.tags" :key="product.tag" class="badge bg-info bg-opacity-10 text-info small"> {{tag}} </span>
                   </div>
                 </td>
                 <td>
-                  <span
-                    class="badge bg-warning bg-opacity-10 text-warning small"
-                  >
-                    Bestseller
+                  <span v-if="product.isBestseller" class="badge bg-warning bg-opacity-10 text-warning small">
+                    {{ product.isBestseller }}
                   </span>
-                  <span class="text-muted text-center">---</span>
+                  <span v-else class="text-muted text-center">---</span>
                 </td>
                 <td class="pe-3 text-end">
                   <button class="btn btn-sm btn-outline-secondary m-2">
@@ -94,15 +91,66 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
-import productService from '@/services/productService';
+import { onMounted, ref } from 'vue'
+import productService from '@/services/productService'
 
-onMounted( () => {
-const Products = productService.getAllProducts();
-console.log(Products);
+const products = ref([])
+const loading = ref(false)
 
+onMounted(() =>{
+    fetchProducts();
 })
 
 
+const fetchProducts = async () => {
+    try{
+        loading.value = true;
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        products.value = await productService.getAllProducts()
+        loading.value = false;
 
+    }
+    catch(err){
+        console.log(err)
+        loading.value=false;
+    }
+    finally{    
+        loading.value=false;
+    }
+}
 </script>
+
+<style scoped>
+.loader {
+  width: 360px;
+  height: 100px;
+  display: block;
+  position: relative;
+  background-image: linear-gradient(100deg, transparent, rgba(38, 50, 56, 0.5) 50%, transparent 80%), linear-gradient(#FFF 20px, transparent 0), linear-gradient(#FFF 20px, transparent 0), linear-gradient(#FFF 20px, transparent 0);
+  background-repeat: no-repeat;
+  background-size: 75px 100px,  125px 20px, 260px 20px, 260px 20px;
+  background-position: 0% 0, 120px 0, 120px 40px, 120px 80px;
+  box-sizing: border-box;
+  animation: animloader 1s linear infinite;
+}
+.loader::after {
+  content: '';  
+  box-sizing: border-box;
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  background: #FFF;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+@keyframes animloader {
+  0% {
+    background-position: 0% 0, 120px 0, 120px 40px, 120px 80px;
+  }
+  100% {
+    background-position: 100% 0, 120px 0, 120px 40px, 120px 80px;
+  }
+}
+</style>
