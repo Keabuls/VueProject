@@ -11,5 +11,13 @@ export default {
     async createProduct(productData){
        const docRef = await addDoc(productCollection, productData);
        return {id: docRef.id, ...productData};
+    },
+
+    async getAllProducts() {
+    const snapshot = await getDocs(productCollection);
+    return snapshot.docs.map((doc) => ({id: doc.id, ...doc.data()}))
     }
+
 }
+
+

@@ -94,5 +94,15 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue';
+import productService from '@/services/productService';
+
+onMounted( () => {
+const Products = productService.getAllProducts();
+console.log(Products);
+
+})
+
+
 
 </script>
