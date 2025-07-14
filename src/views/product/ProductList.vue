@@ -1,6 +1,6 @@
 <template>
   <div class="container py-4">
-    
+
     <div class="border rounded pb-3 px-2">
       <div
         class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center p-4"
@@ -9,10 +9,10 @@
           <h1 class="text-secondary">Products</h1>
           <p class="mb-0 text-muted small">Manage your product listings</p>
         </div>
-        <a href="#" class="btn btn-success btn-sm gap-2 rounded-1 px-4 py-2">
+        <router-link :to="{name:APP_ROUTE_NAMES.PRODUCT_UPSERT}" class="btn btn-success btn-sm gap-2 rounded-1 px-4 py-2">
           <i class="bi bi-plus-square"></i> &nbsp;
           <span>Add Product</span>
-        </a>
+        </router-link>
       </div>
 
       <div class="card-body p-3">
@@ -73,7 +73,9 @@
                   <span v-else class="text-muted text-center">---</span>
                 </td>
                 <td class="pe-3 text-end">
-                  <button class="btn btn-sm btn-outline-secondary m-2">
+                  <button 
+                  @click="router.push({name:APP_ROUTE_NAMES.PRODUCT_UPDATE, params: {id: product.id}})"
+                  class="btn btn-sm btn-outline-secondary m-2">
                     <i class="bi bi-pencil-fill"></i> Edit
                   </button>
 
@@ -94,6 +96,10 @@
 import { onMounted, ref } from 'vue'
 import productService from '@/services/productService'
 import {useSwal} from '@/utility/useSwal.js'
+import { APP_ROUTE_NAMES } from '@/constants/routeNames';
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
 const {showSuccess,showError,showConfirm} = useSwal();
 
 const products = ref([])
@@ -115,7 +121,6 @@ const deletE = async(id) => {
     }
 
 
-
  }
  catch(err){
     console.log(err);
@@ -129,7 +134,7 @@ const deletE = async(id) => {
 const fetchProducts = async () => {
     try{
         loading.value = true;
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 500));
         products.value = await productService.getAllProducts()
         loading.value = false;
 
@@ -143,6 +148,20 @@ const fetchProducts = async () => {
     }
 }
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <style scoped>
 .loader {

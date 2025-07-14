@@ -52,6 +52,11 @@ const router = createRouter({
       name: APP_ROUTE_NAMES.PRODUCT_UPSERT,
       component: ProductUpsert,
     },
+    {
+      path: '/productupdate/:id',
+      name: APP_ROUTE_NAMES.PRODUCT_UPDATE,
+      component: ProductUpsert,
+    },
   ],
 })
 

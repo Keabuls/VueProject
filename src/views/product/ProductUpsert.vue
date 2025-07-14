@@ -3,7 +3,7 @@
     <div class="row border p-4 my-5 rounded">
       <div class="col-9">
         <form v-on:submit.prevent="handleSubmit">
-          <div class="h2 text-center text-success">Create Product</div>
+          <div class="h2 text-center text-success">{{ productIdForUpdate? "Update": "Create" }} Product</div>
           <hr />
           <div v-if="errorList.length > 0" class="alert alert-danger pb-0">
             Please fix the following errors:
@@ -66,7 +66,7 @@
             <button class="btn btn-success m-2 w-25">
               <span v-if="loading" class="spinner-border spinner-border-sm me-2"></span>Submit
             </button>
-            <a href="/" class="btn btn-secondary m-2 w-25"> Cancel </a>
+            <router-link :to="{name:APP_ROUTE_NAMES.PRODUCT_LIST}" class="btn btn-secondary m-2 w-25"> Cancel </router-link>
           </div>
         </form>
       </div>
@@ -110,6 +110,23 @@ const productObj = reactive({
   image: 'https://placehold.co/600x400',
 })
 
+const productIdForUpdate = route.params.id
+
+onMounted(async () => {
+  if (!productIdForUpdate) return;
+  loading.value = true
+  try {
+    const product = await productService.getDocById(productIdForUpdate)
+    Object.assign(productObj, {...product,tags: product.tags.join(', ')})
+  } catch (error) {
+    console.log(error)
+    showError('Failed to fetch product details')
+  } finally {
+    loading.value = false
+  }
+
+})
+
 async function handleSubmit() {
   try {
     loading.value = true
@@ -132,8 +149,16 @@ async function handleSubmit() {
         tags:productObj.tags.length >0 ? productObj.tags.split(',').map((tag) => tag.trim()):[],
         bestseller: Boolean(productObj.isBestseller),
       }
-      await productService.createProduct(productData);
-      showSuccess('Successfully Added')
+      if (productIdForUpdate) {
+        await productService.updateProduct(productIdForUpdate, productData);
+        showSuccess('Successfully Updated')
+      }
+      else{
+        await productService.createProduct(productData);
+        showSuccess('Successfully Added')
+      }
+
+
       router.push({name:APP_ROUTE_NAMES.PRODUCT_LIST})
     } 
   } catch (e) {
