@@ -133,9 +133,9 @@ async function handleSubmit() {
         bestseller: Boolean(productObj.isBestseller),
       }
       await productService.createProduct(productData);
-      showSuccess('asdasd')
+      showSuccess('Successfully Added')
       router.push({name:APP_ROUTE_NAMES.PRODUCT_LIST})
-    }
+    } 
   } catch (e) {
     console.log(e)
   } finally {
