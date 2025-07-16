@@ -69,6 +69,7 @@
               <li v-for="(sort, index) in SORT_OPTIONS" :key="index">
                 <button
                   class="dropdown-item py-2 d-flex align-items-center gap-2"
+                  @click="selectedSortOption = sort"
                 >
                   <i class="bi"></i>
                   <span class="text-capitalize"> {{ sort }} </span>
@@ -143,6 +144,16 @@ const filteredProductList = computed(() => {
   });
 }
   
+  if (selectedSortOption.value === SORT_NAME_A_Z) {
+    tempArr.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (selectedSortOption.value === SORT_NAME_Z_A) {
+    tempArr.sort((a, b) => b.name.localeCompare(a.name));
+  } else if (selectedSortOption.value === SORT_PRICE_LOW_HIGH) {
+    tempArr.sort((a, b) => a.price - b.price);
+  } else if (selectedSortOption.value === SORT_PRICE_HIGH_LOW) {
+    tempArr.sort((a, b) => b.price - a.price);
+  }
+
   
   return tempArr;
 });

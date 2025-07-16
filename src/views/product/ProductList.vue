@@ -40,7 +40,7 @@
                       style="width: 50px; height: 50px"
                     />
                     <div>
-                      <div class="fw-semibold small">{{ product.name }}}</div>
+                      <div class="fw-semibold small">{{ product.name }}</div>
                       <small
                         class="text-muted text-truncate d-inline-block"
                         style="max-width: 200px"
