@@ -43,7 +43,16 @@
       <div class="row g-3 mb-4 align-items-center">
         <div class="col-md-auto">
           <div class="d-flex flex-wrap gap-3">
-            <button class="btn btn-succcess px-4 py-2">CATEGORY</button>
+            <button 
+            @click="selectedCategory = category"
+            v-for="(category,index) in categoryList" 
+            :key="index" 
+            class="btn px-4 py-2"
+            :class="{
+              'btn-success text-white': selectedCategory === category,
+              'btn-outline-success': selectedCategory !== category
+            }"
+            >{{category}}</button>
           </div>
         </div>
         <div class="col-md-auto ms-md-auto">
@@ -81,7 +90,10 @@
 import { onMounted, ref } from 'vue'
 import productService from '@/services/productService.js'
 import productCard from '@/components/Product/ProductCard.vue'
+import {PRODUCT_CATEGORIES} from '@/constants/appConstants.js'
 
+const selectedCategory = ref('ALL')
+const categoryList = ref(["ALL",...PRODUCT_CATEGORIES])
 
 const products = ref([])
 const loading = ref(false)

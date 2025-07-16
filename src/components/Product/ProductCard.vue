@@ -20,18 +20,23 @@
         <p class="card-text text-truncate-lines-2 mb-3">{{ product.description }}  </p>
         <div class="d-flex justify-content-between align-items-center mb-3">
           <div class="fw-bold me-2 fs-5 text-muted">
-            <span>
-              <span class="text-decoration-line-through"> ${{ product.price }} /sqft </span>
-              <span class="text-danger px-1"> SALE</span>
-            </span>
-            <span> ${{product.salePrice}} /sqft </span>
+                <span class="text-success"
+                :style="{textDecoration: product.salePrice ? 'line-through' : 'none'}">
+                
+                
+                  ${{ product.price.toFixed(0) }}
+                  <span>/sqft</span>
+                </span>
+                
+                <span class="text-danger" v-if="product.salePrice"> ${{product.salePrice}}/sqft </span>
           </div>
-          <router-link
+          <button
             class="btn btn-success fs-6 py-2 px-4 btn-sm"
-            to="/productlist"
+            data-bs-toggle="modal"
+            :data-bs-target="`#productDetailModel-${product.id}`"
           >
             <i class="bi bi-card-list"></i> View Details
-          </router-link>
+          </button>
         </div>
         <div class="d-flex flex-wrap gap-2">
           <span class="badge bg-secondary p-2">{{product.category}}</span>
@@ -39,12 +44,14 @@
         </div>
       </div>
     </div>
+    <productDetail :product="product"></productDetail>
   </div>
 </template>
 
 <script setup>
 import { defineProps } from 'vue';
 import { APP_ROUTE_NAMES } from '@/constants/routeNames';
+import productDetail from '@/components/Product/ProductDetail.vue';  
 const props = defineProps({
   product: {
     type: Object,
