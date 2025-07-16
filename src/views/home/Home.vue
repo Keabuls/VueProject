@@ -71,7 +71,7 @@
       </div>
 
       <div>
-        <div class="row g-4"><productCard></productCard></div>
+        <div class="row g-4" ><productCard v-for="product in products":key="product.id"  :product="product"></productCard></div>
       </div>
     </div>
   </div>
@@ -79,7 +79,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import productService from '@/services/productService'
+import productService from '@/services/productService.js'
 import productCard from '@/components/Product/ProductCard.vue'
 
 
