@@ -59,12 +59,15 @@
           <div class="mb-3">
             <label class="form-label">Image</label>
             <div class="input-group">
-              <input type="file" class="form-control" />
+              <input type="file" class="form-control" 
+              @change="handleImageUpload"
+              :disable="isImageLoading"
+              />
             </div>
           </div>
           <div class="pt-3">
-            <button class="btn btn-success m-2 w-25">
-              <span v-if="loading" class="spinner-border spinner-border-sm me-2"></span>Submit
+            <button class="btn btn-success m-2 w-25" :disabled="loading || isImageLoading">
+              <span v-if="loading || isImageLoading" class="spinner-border spinner-border-sm me-2"></span>Submit
             </button>
             <router-link :to="{name:APP_ROUTE_NAMES.PRODUCT_LIST}" class="btn btn-secondary m-2 w-25"> Cancel </router-link>
           </div>
@@ -72,7 +75,7 @@
       </div>
       <div class="col-3">
         <img
-          :src="`https://placehold.co/600x400`"
+          :src="productObj.image"
           class="img-fluid w-100 m-3 p-3 rounded"
           alt="Product
         preview"
@@ -89,6 +92,7 @@ import { useRouter, useRoute } from 'vue-router'
 import {useSwal} from '@/utility/useSwal.js'
 import productService from '@/services/productService.js'
 import { APP_ROUTE_NAMES } from '@/constants/routeNames.js'
+import { uploadtoCloudinary } from '@/utility/cloudinary.js' 
 
 const {showSuccess,showError,showConfirm} = useSwal();
 
@@ -96,6 +100,8 @@ const {showSuccess,showError,showConfirm} = useSwal();
 const route = useRoute()
 const router = useRouter()
 const loading = ref(false)
+const isImageLoading = ref(false)
+
 const errorList = reactive([])
 
 
@@ -168,4 +174,27 @@ async function handleSubmit() {
   }
   console.log(productObj)
 }
+
+const handleImageUpload = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  try {
+    isImageLoading.value = true;
+    const imageUrl = await uploadtoCloudinary(file);
+    productObj.image = imageUrl;
+  } 
+  catch (err) {
+    console.log('Image upload failed:', err);
+    throw err;
+  } 
+  finally {
+
+    isImageLoading.value = false;
+  }
+
+
+}
+
+
 </script>

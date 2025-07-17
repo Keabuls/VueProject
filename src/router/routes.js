@@ -72,9 +72,10 @@ router.beforeEach(async (toString, from) => {
   }
 })
 
-function isAdmin() {
+async function isAdmin() {
   const authStore = useAuthStore()
-  if (authStore.isAuthenticated) {
+  
+   if (authStore.isAuthenticated) {
     if (authStore.isAdmin) {
       return true
     } else {

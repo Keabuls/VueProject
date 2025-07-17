@@ -41,11 +41,6 @@
         </ul>
 
         <ul class="d-flex navbar-nav">
-          <li class="nav-link" v-if="authStore.isAuthenticated">
-            Welcome, {{ authStore.user?.email }}!
-            >
-
-          </li>
           <li class="nav-item dropdown">
             <a
               href="#"
@@ -70,7 +65,9 @@
               </li>
             </ul>
           </li>
-
+          <li class="nav-link" v-if="authStore.isAuthenticated">
+            Welcome, {{ authStore.user?.email }}!
+          </li>
           <li class="nav-item" v-if="!authStore.isAuthenticated">
             <router-link
               class="nav-link active"
@@ -88,9 +85,7 @@
             >
           </li>
           <li class="nav-item" v-if="authStore.isAuthenticated">
-            <button @click="handleSignOut" class="nav-link "
-            >Sign Out
-          </button>
+            <button @click="handleSignOut" class="nav-link">Sign Out</button>
           </li>
         </ul>
       </div>
@@ -115,7 +110,7 @@ const handleSignOut = async () => {
     authStore.signOutUser()
     showSuccess('Signed Out Successfully')
     setTimeout(() => {
-    router.push({ name: APP_ROUTE_NAMES.HOME })
+      router.push({ name: APP_ROUTE_NAMES.HOME })
     }, 2000)
   } catch (error) {
     error.value = error.message
