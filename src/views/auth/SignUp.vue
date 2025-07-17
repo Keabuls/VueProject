@@ -22,6 +22,7 @@
               </div>
               <button type="submit" class="btn btn-success w-100">
                 <span v-if="loading" class="spinner-border spinner-border-sm me-2"></span>
+                
                 Create Account
               </button>
               <div v-if="error" class="alert alert-danger mt-3 mb-0">{{ error }}</div>
@@ -57,15 +58,17 @@ const form = reactive({
 const handleSignUp = async () => {
   try {
     error.value = ''
-    console.log(form)
-    authStore.signUpUser(form.email, form.password)
+    await authStore.signUpUser(form.email, form.password)
     showSuccess('Account created successfully')
     setTimeout(() => {
       router.push({ name: APP_ROUTE_NAMES.HOME })
     }, 1800)
-  } catch (error) {
-    error.value = error.message
-    showError(error.message)
+  } catch (err) {
+    error.value = err.message
+    //console.log(error)
+    //console.log(error.message)
+    //console.log(error.value)
+    showError(err.message)
   } finally {
     loading.value = false
   }

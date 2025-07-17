@@ -22,6 +22,7 @@ export const useAuthStore = defineStore("authStore",() => {
         }
         catch (err) {
             error.value = err.message;
+            throw err; // Re-throw the error to handle it in the component
         }
         finally {
             isLoading.value = false;
