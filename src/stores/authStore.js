@@ -121,7 +121,7 @@ const initilazeAuth = async () => {
             user,
             error,
             role,
-
+            initialized,
             //getters
             isAuthenticated,
             isAdmin,
