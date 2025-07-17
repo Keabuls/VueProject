@@ -42,10 +42,11 @@ import { APP_ROUTE_NAMES } from '@/constants/routeNames.js'
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useSwal } from '@/utility/useSwal'
+import {useAuthStore} from '@/stores/authStore.js'
 
 const { showSuccess, showError } = useSwal()
 const router = useRouter()
-
+const authStore = useAuthStore()
 const error = ref('')
 const loading = ref(false)
 const form = reactive({
@@ -57,7 +58,11 @@ const handleSignUp = async () => {
   try {
     error.value = ''
     console.log(form)
+    authStore.signUpUser(form.email, form.password)
     showSuccess('Account created successfully')
+    setTimeout(() => {
+      router.push({ name: APP_ROUTE_NAMES.HOME })
+    }, 1800)
   } catch (error) {
     error.value = error.message
     showError(error.message)
