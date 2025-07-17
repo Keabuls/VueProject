@@ -91,7 +91,27 @@ const initilazeAuth = async () => {
             isLoading.value = false;
         }
 
-    }
+    };
+
+    const signOutUser = async () => {
+        isLoading.value = true;
+        try {
+            await signOut(auth);
+            clearUser();
+            error.value = null;
+        }
+        catch (err) {
+            error.value = err.message;
+            throw err; // Re-throw the error to handle it in the component
+        }
+        finally {
+            isLoading.value = false;
+        }
+
+    };
+
+
+
 
 
 
@@ -111,7 +131,8 @@ const initilazeAuth = async () => {
             signUpUser,
             signInUser,
             initilazeAuth,
-            
+            signOutUser,
+
 
         }
 

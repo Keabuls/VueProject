@@ -81,7 +81,9 @@
             >
           </li>
           <li class="nav-item" v-if="authStore.isAuthenticated">
-            <button class="nav-link ">Sign Out</button>
+            <button @click="handleSignOut" class="nav-link "
+            >Sign Out
+          </button>
           </li>
         </ul>
       </div>
@@ -94,9 +96,23 @@ import { useRouter, RouterLink } from 'vue-router'
 import { APP_ROUTE_NAMES } from '@/constants/routeNames.js'
 import { useThemeStore } from '../../stores/themeStore.js'
 import { useAuthStore } from '@/stores/authStore.js'
-
+import { useSwal } from '@/utility/useSwal'
+const { showSuccess, showError } = useSwal()
 const authStore = useAuthStore()
 
 const themeStore = useThemeStore()
 const router = useRouter()
+
+const handleSignOut = async () => {
+  try {
+    authStore.signOutUser()
+    showSuccess('Signed Out Successfully')
+    setTimeout(() => {
+    router.push({ name: APP_ROUTE_NAMES.HOME })
+    }, 2000)
+  } catch (error) {
+    error.value = error.message
+    showError(error.message)
+  }
+}
 </script>
