@@ -20,8 +20,8 @@
                   required
                 />
               </div>
-              <button type="submit" class="btn btn-success w-100">
-                <span v-if="loading" class="spinner-border spinner-border-sm me-2"></span>
+              <button :disabled="authStore.isLoading" type="submit" class="btn btn-success w-100">
+                <span v-if="authStore.isLoading" class="spinner-border spinner-border-sm me-2"></span>
                 Sign In
               </button>
               <div v-if="error" class="alert alert-danger mt-3 mb-0">{{ error }}</div>
@@ -42,7 +42,9 @@ import {APP_ROUTE_NAMES} from '@/constants/routeNames.js';
 import { ref,reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useSwal } from '@/utility/useSwal';
+import {useAuthStore} from '@/stores/authStore.js'
 
+const authStore = useAuthStore()
 const { showSuccess, showError } = useSwal();
 const router = useRouter();
 
