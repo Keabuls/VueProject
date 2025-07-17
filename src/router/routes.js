@@ -47,25 +47,58 @@ const router = createRouter({
       path: '/productlist',
       name: APP_ROUTE_NAMES.PRODUCT_LIST,
       component: ProductList,
+      beforeEnter: [isAdmin],
     },
     {
       path: '/productupsert',
       name: APP_ROUTE_NAMES.PRODUCT_UPSERT,
       component: ProductUpsert,
+      beforeEnter: [isAdmin],
     },
     {
       path: '/productupdate/:id',
       name: APP_ROUTE_NAMES.PRODUCT_UPDATE,
       component: ProductUpsert,
+      beforeEnter: [isAdmin],
+
     },
   ],
 })
 
-router.beforeEach(async(toString,from) => {
-const authStore = useAuthStore()
-if(!authStore.initialized) {
-  await authStore.initilazeAuth()
-  }}
-)
+router.beforeEach(async (toString, from) => {
+  const authStore = useAuthStore()
+  if (!authStore.initialized) {
+    await authStore.initilazeAuth()
+  }
+})
+
+function isAdmin() {
+  const authStore = useAuthStore()
+  if (authStore.isAuthenticated) {
+    if (authStore.isAdmin) {
+      return true
+    } else {
+      return { name: APP_ROUTE_NAMES.ACCESS_DENIED }
+    }
+  }
+  else {
+    return { name: APP_ROUTE_NAMES.SING_IN }
+  }
+}
+function isAuthenticated() {
+  const authStore = useAuthStore()
+  if (authStore.isAuthenticated) {
+    return true;
+  }
+  else {
+    return { name: APP_ROUTE_NAMES.SING_IN }
+  }
+}
+
+
+
+
+
+
 
 export default router
