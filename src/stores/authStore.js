@@ -13,6 +13,8 @@ export const useAuthStore = defineStore("authStore",() => {
     const isLoading = ref(false); 
     const role = ref(null);
 
+const isAuthenticated = computed(() => user.value !== null);
+const isAdmin = computed(() => role.value === ROLE_ADMIN);
 
     const signUpUser = async (email, password) => {
         isLoading.value = true;
@@ -53,11 +55,12 @@ export const useAuthStore = defineStore("authStore",() => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             
+            
             user.value = userCredential.user;
             user.role = ROLE_USER;
             user.Id = userCredential.user.uid;
             error.value = null;
-
+            console.log(user.value);
         }
         catch (err) {
             error.value = err.message;
@@ -73,10 +76,16 @@ export const useAuthStore = defineStore("authStore",() => {
 
 
     return {
+            // state
             user,
             error,
             role,
-            clearUser,
+
+            //getters
+            isAuthenticated,
+            isAdmin,
+            
+            // actions
             isLoading,
             signUpUser,
             signInUser,
