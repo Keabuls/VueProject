@@ -65,9 +65,6 @@ const handleSignUp = async () => {
     }, 1800)
   } catch (err) {
     error.value = err.message
-    //console.log(error)
-    //console.log(error.message)
-    //console.log(error.value)
     showError(err.message)
   } finally {
     loading.value = false

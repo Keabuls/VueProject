@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { ref,computed } from "vue";
 import { db,auth } from "@/utility/firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword,signInWithEmailAndPassword } from "firebase/auth";
 import { ROLE_ADMIN,ROLE_USER } from "@/constants/appConstants";
 
 
@@ -27,6 +27,32 @@ export const useAuthStore = defineStore("authStore",() => {
 
 
             
+            clearUser();
+            
+            error.value = null;
+
+        }
+        catch (err) {
+            error.value = err.message;
+            throw err; // Re-throw the error to handle it in the component
+        }
+        finally {
+            isLoading.value = false;
+        }
+
+    }
+    const clearUser = () => {
+        user.value = null;
+        role.value = null;
+        user.Id = null;
+    };
+
+
+    const signInUser = async (email, password) => {
+        isLoading.value = true;
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            
             user.value = userCredential.user;
             user.role = ROLE_USER;
             user.Id = userCredential.user.uid;
@@ -49,8 +75,11 @@ export const useAuthStore = defineStore("authStore",() => {
     return {
             user,
             error,
+            role,
+            clearUser,
             isLoading,
             signUpUser,
+            signInUser,
 
         }
 
